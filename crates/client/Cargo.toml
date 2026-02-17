@@ -1,0 +1,37 @@
+[package]
+name = "rorumall"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "rorumall"
+path = "src/main.rs"
+
+[dependencies]
+rorumall-shared = { path = "../shared" }
+rinch = { workspace = true, features = ["desktop", "components", "theme", "file-dialogs", "clipboard", "debug"] }
+rinch-core = { workspace = true }
+rinch-tabler-icons = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
+uuid = { workspace = true }
+ed25519-dalek = { workspace = true }
+base64 = { workspace = true }
+sha2 = { workspace = true }
+hex = { workspace = true }
+rand = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+reqwest = { workspace = true }
+tokio-tungstenite = { workspace = true }
+futures-util = { workspace = true }
+pulldown-cmark = { workspace = true }
+ammonia = { workspace = true }
+url = { workspace = true }
+dirs = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+urlencoding = "2.1"
+futures-channel = "0.3"
