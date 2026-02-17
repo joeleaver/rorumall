@@ -34,3 +34,12 @@ wgpu-core = { git = "https://github.com/joeleaver/wgpu-fork", branch = "rinch-pa
 wgpu-hal = { git = "https://github.com/joeleaver/wgpu-fork", branch = "rinch-patch" }
 wgpu-types = { git = "https://github.com/joeleaver/wgpu-fork", branch = "rinch-patch" }
 naga = { git = "https://github.com/joeleaver/wgpu-fork", branch = "rinch-patch" }
+
+# Size-optimized release profile
+[profile.small]
+inherits = "release"
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
