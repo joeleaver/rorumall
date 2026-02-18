@@ -1,30 +1,40 @@
 use rinch::prelude::*;
-use crate::stores::StoredMessage;
+use crate::stores::{get_members_store, StoredMessage};
 use rorumall_shared::MessageType;
 
 #[component]
-pub fn message_item(msg: StoredMessage) -> NodeHandle {
+pub fn message_item(msg: StoredMessage, group_id: String) -> NodeHandle {
     match msg.message_type {
         MessageType::Article => {
-            crate::components::messages::article_item::article_item(__scope, msg)
+            crate::components::messages::article_item::article_item(__scope, msg, group_id)
         }
         MessageType::Memo => {
-            crate::components::messages::memo_item::memo_item(__scope, msg)
+            crate::components::messages::memo_item::memo_item(__scope, msg, group_id)
         }
         MessageType::Message => {
-            chat_message(__scope, msg)
+            chat_message(__scope, msg, group_id)
         }
     }
 }
 
 #[component]
-fn chat_message(msg: StoredMessage) -> NodeHandle {
+fn chat_message(msg: StoredMessage, group_id: String) -> NodeHandle {
     let user_display = msg.user_id.split('@').next().unwrap_or(&msg.user_id).to_string();
     let time = msg.created_at.format("%H:%M").to_string();
     let has_attachments = !msg.attachments.is_empty();
     let parent_id = use_signal(|| msg.parent_id.clone());
     let attachments = use_signal(|| msg.attachments.clone());
     let content = use_signal(|| msg.content.clone());
+
+    let avatar_url = {
+        let members = get_members_store()
+            .get_group_members(&group_id)
+            .unwrap_or_default();
+        members.iter()
+            .find(|m| m.user_id == msg.user_id)
+            .and_then(|m| m.avatar.clone())
+            .unwrap_or_default()
+    };
 
     rsx! {
         div {
@@ -33,7 +43,8 @@ fn chat_message(msg: StoredMessage) -> NodeHandle {
             Avatar {
                 size: "sm",
                 color: "indigo",
-                {user_display.chars().next().unwrap_or('?').to_string()}
+                name: user_display.clone(),
+                src: avatar_url,
             }
 
             div {

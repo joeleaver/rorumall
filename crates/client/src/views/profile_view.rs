@@ -134,7 +134,7 @@ pub fn profile_view() -> NodeHandle {
                             size: "xl",
                             color: "indigo",
                             src: {profile_store.current.get().as_ref().and_then(|p| p.avatar.clone()).unwrap_or_default()},
-                            {auth.handle().unwrap_or_default().chars().next().unwrap_or('?').to_string()}
+                            name: {profile_store.current.get().as_ref().and_then(|p| p.display_name.clone()).unwrap_or_else(|| auth.handle().unwrap_or_default())},
                         }
 
                         Stack {

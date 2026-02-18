@@ -1,5 +1,5 @@
 use rinch::prelude::*;
-use crate::stores::StoredMessage;
+use crate::stores::{get_members_store, StoredMessage};
 
 pub fn render_markdown(text: &str) -> String {
     let parser = pulldown_cmark::Parser::new(text);
@@ -9,7 +9,7 @@ pub fn render_markdown(text: &str) -> String {
 }
 
 #[component]
-pub fn article_item(msg: StoredMessage) -> NodeHandle {
+pub fn article_item(msg: StoredMessage, group_id: String) -> NodeHandle {
     let user_display = msg.user_id.split('@').next().unwrap_or(&msg.user_id).to_string();
     let time = msg.created_at.format("%b %d, %Y at %H:%M").to_string();
     let expanded = use_signal(|| false);
@@ -21,6 +21,16 @@ pub fn article_item(msg: StoredMessage) -> NodeHandle {
         format!("{}...", &content[..200])
     } else {
         content.clone()
+    };
+
+    let avatar_url = {
+        let members = get_members_store()
+            .get_group_members(&group_id)
+            .unwrap_or_default();
+        members.iter()
+            .find(|m| m.user_id == msg.user_id)
+            .and_then(|m| m.avatar.clone())
+            .unwrap_or_default()
     };
 
     rsx! {
@@ -59,7 +69,8 @@ pub fn article_item(msg: StoredMessage) -> NodeHandle {
                     Avatar {
                         size: "xs",
                         color: "indigo",
-                        {user_display.chars().next().unwrap_or('?').to_string()}
+                        name: user_display.clone(),
+                        src: avatar_url,
                     }
 
                     Text {

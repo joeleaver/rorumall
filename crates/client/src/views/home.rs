@@ -97,7 +97,7 @@ pub fn home_view() -> NodeHandle {
                                     size: "md",
                                     color: "indigo",
                                     src: {group.avatar.clone().unwrap_or_default()},
-                                    {group.name.chars().next().unwrap_or('?').to_string()}
+                                    name: group.name.clone(),
                                 }
                             }
                         }

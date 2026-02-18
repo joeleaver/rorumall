@@ -27,6 +27,7 @@ url = "2.5"
 dirs = "5.0"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+image = { version = "0.25", default-features = false, features = ["png"] }
 
 [patch.crates-io]
 wgpu = { git = "https://github.com/joeleaver/wgpu-fork", branch = "rinch-patch" }

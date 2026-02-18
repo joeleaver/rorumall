@@ -9,12 +9,6 @@ pub fn profile_card(
     avatar_url: String,
     status: String,
 ) -> NodeHandle {
-    let initials = display_name
-        .chars()
-        .next()
-        .unwrap_or('?')
-        .to_uppercase()
-        .to_string();
     let bio_sig = use_signal(|| bio);
     let user_id_sig = use_signal(|| user_id);
     let display_name_sig = use_signal(|| display_name);
@@ -36,7 +30,7 @@ pub fn profile_card(
                         color: "indigo",
                         radius: "xl",
                         src: {avatar_url_sig.get().clone()},
-                        {initials.clone()}
+                        name: display_name_sig.get().clone(),
                     }
 
                     div {

@@ -9,7 +9,7 @@ path = "src/main.rs"
 
 [dependencies]
 rorumall-shared = { path = "../shared" }
-rinch = { workspace = true, features = ["desktop", "components", "theme", "file-dialogs", "clipboard", "debug"] }
+rinch = { workspace = true, features = ["desktop", "components", "theme", "file-dialogs", "clipboard", "debug", "image-network"] }
 rinch-core = { workspace = true }
 rinch-tabler-icons = { workspace = true }
 tokio = { workspace = true }
@@ -33,5 +33,6 @@ url = { workspace = true }
 dirs = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
+image = { workspace = true }
 urlencoding = "2.1"
 futures-channel = "0.3"

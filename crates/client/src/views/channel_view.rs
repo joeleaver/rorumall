@@ -81,6 +81,7 @@ pub fn channel_view() -> NodeHandle {
         .map(|c| c.name.clone())
         .unwrap_or_else(|| channel_id.clone());
 
+    let gid = use_signal(|| group_id.clone());
     let cid = use_signal(|| channel_id.clone());
 
     rsx! {
@@ -117,14 +118,14 @@ pub fn channel_view() -> NodeHandle {
                 for msg in messages_store.messages.get().get(&cid.get()).map(|ch| ch.messages.clone()).unwrap_or_default() {
                     div {
                         key: msg.id.clone(),
-                        {crate::components::messages::message_item::message_item(__scope, msg)}
+                        {crate::components::messages::message_item::message_item(__scope, msg, gid.get().clone())}
                     }
                 }
             }
 
             // Message input
             div {
-                {crate::components::messages::message_input::message_input(__scope, channel_id.clone(), group_id.clone(), host.clone())}
+                {crate::components::messages::message_input::message_input(__scope, channel_id.clone(), gid.get().clone(), host.clone())}
             }
         }
     }

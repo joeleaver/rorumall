@@ -66,7 +66,8 @@ pub fn group_settings(host: String, group_id: String) -> NodeHandle {
                             Avatar {
                                 size: "sm",
                                 color: "indigo",
-                                {member.user_id.chars().next().unwrap_or('?').to_uppercase().to_string()}
+                                name: member.display_name.clone().unwrap_or_else(|| member.user_id.split('@').next().unwrap_or(&member.user_id).to_string()),
+                                src: member.avatar.clone().unwrap_or_default(),
                             }
 
                             Stack {
