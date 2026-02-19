@@ -195,7 +195,7 @@ pub fn message_input(channel_id: String, group_id: String, host: String) -> Node
     rsx! {
         div {
             class: "message-input-area",
-            style: "border-top: 1px solid var(--rinch-color-dark-4, #373a40); padding: 12px 16px;",
+            style: "border-top: 1px solid var(--rinch-color-dark-4, #373a40); padding: 12px 16px; background: var(--rinch-color-dark-7, #1a1b1e);",
 
             // Reply indicator
             if reply_to.get().is_some() {

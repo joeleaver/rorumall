@@ -369,6 +369,28 @@ impl ApiClient {
         self.delete(&format!("/api/groups/{}/roles/{}", group_id, role_id)).await
     }
 
+    pub async fn get_bytes(&self, path: &str) -> Result<Vec<u8>, ApiError> {
+        let url = self.url(path);
+        let rb = self.client.get(&url);
+        let rb = self.apply_signing(rb, "GET", &url, path, &[]);
+
+        let resp = rb.send().await.map_err(|e| ApiError::Network(e.to_string()))?;
+        let status = resp.status().as_u16();
+        let is_success = resp.status().is_success();
+
+        if !is_success {
+            let text = resp
+                .text()
+                .await
+                .map_err(|e| ApiError::Network(format!("failed to read body: {e}")))?;
+            return Err(ApiError::Http { status, body: text });
+        }
+        resp.bytes()
+            .await
+            .map(|b| b.to_vec())
+            .map_err(|e| ApiError::Network(format!("failed to read bytes: {e}")))
+    }
+
     pub async fn upload_file(
         &self,
         file_data: Vec<u8>,

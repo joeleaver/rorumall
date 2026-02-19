@@ -51,11 +51,12 @@ pub fn channel_list(host: String, group_id: String, show_create_channel: Signal<
 
             // Group header
             div {
-                style: "padding: 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--rinch-color-dark-4, #373a40);",
+                class: "panel-header",
+                style: "height: 52px; min-height: 52px; display: flex; align-items: center; padding: 0 12px; justify-content: space-between; border-bottom: 1px solid var(--rinch-color-dark-4, #373a40); flex-shrink: 0;",
 
                 Text {
                     size: "sm",
-                    weight: "600",
+                    weight: "700",
                     {group_name}
                 }
 

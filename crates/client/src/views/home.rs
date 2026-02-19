@@ -67,17 +67,19 @@ pub fn home_view() -> NodeHandle {
                 // Group sidebar
                 div {
                     class: "sidebar",
-                    style: "width: 72px; display: flex; flex-direction: column; align-items: center; padding: 8px 0; gap: 8px;",
+                    style: "width: 72px; display: flex; flex-direction: column; align-items: center; gap: 4px;",
 
-                    // Home button
-                    ActionIcon {
-                        variant: "subtle",
-                        size: "xl",
-                        onclick: move || navigate(AppRoute::Home),
-                        {render_tabler_icon(__scope, TablerIcon::Home, TablerIconStyle::Outline)}
+                    // Home button — 52px header to match other panels
+                    div {
+                        style: "width: 100%; height: 52px; min-height: 52px; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--rinch-color-dark-4, #373a40); flex-shrink: 0;",
+
+                        ActionIcon {
+                            variant: "subtle",
+                            size: "xl",
+                            onclick: move || navigate(AppRoute::Home),
+                            {render_tabler_icon(__scope, TablerIcon::Home, TablerIconStyle::Outline)}
+                        }
                     }
-
-                    Divider {}
 
                     // Group list
                     for group in groups_store.joined_groups.get().clone() {
@@ -151,8 +153,14 @@ pub fn home_view() -> NodeHandle {
                     class: "content-area",
                     style: "flex: 1; display: flex; flex-direction: column; overflow: hidden;",
 
-                    if matches!(nav.get().clone(), AppRoute::Channel { .. }) {
+                    // for-loop keyed on channel_id forces full re-creation on channel switch
+                    for route in std::iter::once(nav.get().clone()).filter(|r| matches!(r, AppRoute::Channel { .. })) {
+                        let ch_key = match route {
+                            AppRoute::Channel { ref channel_id, .. } => channel_id.clone(),
+                            _ => String::new(),
+                        };
                         div {
+                            key: ch_key,
                             style: "flex: 1; display: flex; flex-direction: column; overflow: hidden;",
                             {crate::views::channel_view::channel_view(__scope)}
                         }
@@ -165,8 +173,26 @@ pub fn home_view() -> NodeHandle {
                         };
 
                         div {
-                            style: "flex: 1; overflow: auto; padding: 24px;",
-                            {crate::components::ui::group_settings::group_settings(__scope, gs_host, gs_gid)}
+                            style: "flex: 1; display: flex; flex-direction: column; overflow: hidden;",
+
+                            // Settings header — matches channel header height
+                            div {
+                                class: "panel-header",
+                                style: "height: 52px; min-height: 52px; display: flex; align-items: center; padding: 0 20px; gap: 10px; border-bottom: 1px solid var(--rinch-color-dark-4, #373a40); flex-shrink: 0;",
+
+                                {render_tabler_icon(__scope, TablerIcon::Settings, TablerIconStyle::Outline)}
+
+                                Text {
+                                    size: "md",
+                                    weight: "600",
+                                    "Settings"
+                                }
+                            }
+
+                            div {
+                                style: "flex: 1; overflow: auto; padding: 24px;",
+                                {crate::components::ui::group_settings::group_settings(__scope, gs_host, gs_gid)}
+                            }
                         }
                     }
 

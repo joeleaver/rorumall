@@ -1,5 +1,4 @@
 use rinch::prelude::*;
-use rinch_tabler_icons::{render_tabler_icon, TablerIcon, TablerIconStyle};
 use crate::navigation::{get_nav, AppRoute};
 use crate::stores::{get_auth_store, get_groups_store, get_messages_store, StoredMessage};
 
@@ -81,8 +80,9 @@ pub fn channel_view() -> NodeHandle {
         .map(|c| c.name.clone())
         .unwrap_or_else(|| channel_id.clone());
 
-    let gid = use_signal(|| group_id.clone());
-    let cid = use_signal(|| channel_id.clone());
+    let input_channel_id = channel_id.clone();
+    let input_group_id = group_id.clone();
+    let input_host = host.clone();
 
     rsx! {
         div {
@@ -90,22 +90,27 @@ pub fn channel_view() -> NodeHandle {
 
             // Channel header
             div {
-                style: "padding: 12px 16px; border-bottom: 1px solid var(--rinch-color-dark-4, #373a40); display: flex; align-items: center; gap: 8px;",
+                class: "panel-header",
+                style: "height: 52px; min-height: 52px; display: flex; align-items: center; padding: 0 20px; gap: 10px; border-bottom: 1px solid var(--rinch-color-dark-4, #373a40); flex-shrink: 0;",
 
-                div {
-                    {render_tabler_icon(__scope, TablerIcon::Hash, TablerIconStyle::Outline)}
+                Text {
+                    size: "lg",
+                    color: "dimmed",
+                    weight: "400",
+                    "#"
                 }
 
-                Title {
-                    order: 4,
+                Text {
+                    size: "md",
+                    weight: "600",
                     {channel_name}
                 }
             }
 
-            // Message list
+            // Message list — column-reverse keeps scroll anchored to bottom
             div {
                 class: "message-list",
-                style: "flex: 1; overflow-y: auto; padding: 16px; min-height: 0;",
+                style: "flex: 1; overflow-y: auto; padding: 16px; min-height: 0; display: flex; flex-direction: column-reverse;",
 
                 if loading.get() {
                     Stack {
@@ -115,17 +120,17 @@ pub fn channel_view() -> NodeHandle {
                     }
                 }
 
-                for msg in messages_store.messages.get().get(&cid.get()).map(|ch| ch.messages.clone()).unwrap_or_default() {
+                for msg in messages_store.messages.get().get(&channel_id).map(|ch| ch.messages.clone()).unwrap_or_default().into_iter().rev() {
                     div {
                         key: msg.id.clone(),
-                        {crate::components::messages::message_item::message_item(__scope, msg, gid.get().clone())}
+                        {crate::components::messages::message_item::message_item(__scope, msg, group_id.clone())}
                     }
                 }
             }
 
             // Message input
             div {
-                {crate::components::messages::message_input::message_input(__scope, channel_id.clone(), gid.get().clone(), host.clone())}
+                {crate::components::messages::message_input::message_input(__scope, input_channel_id, input_group_id, input_host)}
             }
         }
     }

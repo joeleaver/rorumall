@@ -38,7 +38,8 @@ fn chat_message(msg: StoredMessage, group_id: String) -> NodeHandle {
 
     rsx! {
         div {
-            style: "display: flex; gap: 12px; padding: 8px 0; align-items: flex-start;",
+            class: "chat-message",
+            style: "display: flex; gap: 12px; padding: 6px 8px; border-radius: 6px; align-items: flex-start;",
 
             Avatar {
                 size: "sm",

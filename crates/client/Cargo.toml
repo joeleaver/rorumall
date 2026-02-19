@@ -9,7 +9,7 @@ path = "src/main.rs"
 
 [dependencies]
 rorumall-shared = { path = "../shared" }
-rinch = { workspace = true, features = ["desktop", "components", "theme", "file-dialogs", "clipboard", "debug", "image-network"] }
+rinch = { workspace = true, features = ["desktop", "components", "theme", "file-dialogs", "clipboard", "debug", "image-network", "system-tray"] }
 rinch-core = { workspace = true }
 rinch-tabler-icons = { workspace = true }
 tokio = { workspace = true }

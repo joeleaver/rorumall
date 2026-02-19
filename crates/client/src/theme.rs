@@ -44,15 +44,37 @@ body {
     overflow: hidden;
 }
 
+/* Unified panel header — same height across sidebar + content */
+.panel-header {
+    height: 52px;
+    min-height: 52px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--rinch-color-dark-4, #373a40);
+    flex-shrink: 0;
+}
+
 .message-list {
     flex: 1;
     overflow-y: auto;
     padding: var(--rinch-spacing-md);
 }
 
+.chat-message {
+    padding: 6px 8px;
+    border-radius: 6px;
+    margin: 1px 0;
+}
+
+.chat-message:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
 .message-input-area {
     border-top: 1px solid var(--rinch-color-dark-4, #373a40);
-    padding: var(--rinch-spacing-sm) var(--rinch-spacing-md);
+    padding: 12px 16px;
+    background: var(--rinch-color-dark-7, #1a1b1e);
 }
 
 .auth-container {
