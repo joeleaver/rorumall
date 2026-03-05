@@ -4,17 +4,17 @@ use crate::stores::{get_auth_store, get_members_store};
 #[component]
 pub fn role_editor(_host: String, group_id: String) -> NodeHandle {
     let gid_for_roles = group_id.clone();
-    let roles = use_signal(move || {
+    let roles = Signal::new(
         get_members_store()
             .group_roles
             .get()
             .get(&gid_for_roles)
             .cloned()
             .unwrap_or_default()
-    });
+    );
 
-    let new_role_name = use_signal(|| String::new());
-    let creating = use_signal(|| false);
+    let new_role_name = Signal::new(String::new());
+    let creating = Signal::new(false);
 
     let gid = group_id.clone();
 

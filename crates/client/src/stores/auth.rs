@@ -17,10 +17,10 @@ thread_local! {
 
 impl AuthStore {
     pub fn init() -> Self {
-        let session = use_signal(|| crate::storage::load::<AuthSession>("ofscp_session"));
-        let is_loading = use_signal(|| false);
-        let error = use_signal(|| None::<String>);
-        let server_url = use_signal(|| crate::auth_session::load_domain());
+        let session = Signal::new(crate::storage::load::<AuthSession>("ofscp_session"));
+        let is_loading = Signal::new(false);
+        let error = Signal::new(None::<String>);
+        let server_url = Signal::new(crate::auth_session::load_domain());
 
         let store = Self {
             session,

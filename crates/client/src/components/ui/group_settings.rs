@@ -4,7 +4,7 @@ use crate::components::ui::role_editor::role_editor;
 
 #[component]
 pub fn group_settings(host: String, group_id: String) -> NodeHandle {
-    let active_tab = use_signal(|| "overview".to_string());
+    let active_tab = Signal::new("overview".to_string());
 
     // Get group name from joined_groups (current_group may not be set)
     let group_name = get_groups_store()
@@ -15,10 +15,10 @@ pub fn group_settings(host: String, group_id: String) -> NodeHandle {
         .map(|g| g.name.clone())
         .unwrap_or_else(|| "Group".to_string());
 
-    let group_name_val = use_signal(|| group_name.clone());
+    let group_name_val = Signal::new(group_name.clone());
 
-    let host_sig = use_signal(|| host);
-    let gid_sig = use_signal(|| group_id);
+    let host_sig = Signal::new(host);
+    let gid_sig = Signal::new(group_id);
     let members_store = get_members_store();
 
     rsx! {

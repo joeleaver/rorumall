@@ -6,10 +6,10 @@ pub fn create_channel_modal(
     opened: Signal<bool>,
     group_id: String,
 ) -> NodeHandle {
-    let name = use_signal(|| String::new());
-    let channel_type = use_signal(|| "text".to_string());
-    let creating = use_signal(|| false);
-    let error = use_signal(|| Option::<String>::None);
+    let name = Signal::new(String::new());
+    let channel_type = Signal::new("text".to_string());
+    let creating = Signal::new(false);
+    let error = Signal::new(Option::<String>::None);
 
     let on_create = move || {
         let n = name.get().clone();

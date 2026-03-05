@@ -8,10 +8,10 @@ use crate::stores::get_groups_store;
 pub fn home_view() -> NodeHandle {
     let auth = get_auth_store();
     let groups_store = get_groups_store();
-    let loading = use_signal(|| true);
-    let show_create_group = use_signal(|| false);
-    let show_create_channel = use_signal(|| false);
-    let create_channel_gid = use_signal(|| String::new());
+    let loading = Signal::new(true);
+    let show_create_group = Signal::new(false);
+    let show_create_channel = Signal::new(false);
+    let create_channel_gid = Signal::new(String::new());
 
     // Check auth
     if !auth.is_authenticated() {
@@ -19,7 +19,7 @@ pub fn home_view() -> NodeHandle {
     }
 
     // Load joined groups on mount
-    use_mount(move || {
+    {
         let client = auth.make_client();
         let user_id = auth.user_id().unwrap_or_default();
 
@@ -51,8 +51,7 @@ pub fn home_view() -> NodeHandle {
                 loading.set(false);
             },
         );
-        || {}
-    });
+    }
 
     let nav = get_nav();
 
@@ -66,8 +65,7 @@ pub fn home_view() -> NodeHandle {
 
                 // Group sidebar
                 div {
-                    class: "sidebar",
-                    style: "width: 72px; display: flex; flex-direction: column; align-items: center; gap: 4px;",
+                    style: "width: 72px; display: flex; flex-direction: column; align-items: center; gap: 4px; background: var(--rinch-color-dark-7, #1a1b1e); border-right: 1px solid var(--rinch-color-dark-4, #373a40); overflow-y: auto;",
 
                     // Home button — 52px header to match other panels
                     div {
@@ -142,15 +140,13 @@ pub fn home_view() -> NodeHandle {
                     };
 
                     div {
-                        class: "channel-sidebar",
-                        style: "width: 200px; display: flex; flex-direction: column;",
+                        style: "width: 200px; display: flex; flex-direction: column; background: var(--rinch-color-dark-6, #25262b); border-right: 1px solid var(--rinch-color-dark-4, #373a40); overflow-y: auto;",
                         {crate::components::ui::channel_list::channel_list(__scope, host.clone(), gid.clone(), show_create_channel, create_channel_gid)}
                     }
                 }
 
                 // Content area
                 div {
-                    class: "content-area",
                     style: "flex: 1; display: flex; flex-direction: column; overflow: hidden;",
 
                     // for-loop keyed on channel_id forces full re-creation on channel switch
@@ -177,7 +173,6 @@ pub fn home_view() -> NodeHandle {
 
                             // Settings header — matches channel header height
                             div {
-                                class: "panel-header",
                                 style: "height: 52px; min-height: 52px; display: flex; align-items: center; padding: 0 20px; gap: 10px; border-bottom: 1px solid var(--rinch-color-dark-4, #373a40); flex-shrink: 0;",
 
                                 {render_tabler_icon(__scope, TablerIcon::Settings, TablerIconStyle::Outline)}

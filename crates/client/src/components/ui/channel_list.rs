@@ -18,7 +18,7 @@ pub fn channel_list(host: String, group_id: String, show_create_channel: Signal<
 
     // Fetch channels, members, and roles from API on mount
     let gid = group_id.clone();
-    use_mount(move || {
+    {
         let client = get_auth_store().make_client();
         let gid = gid.clone();
 
@@ -42,8 +42,7 @@ pub fn channel_list(host: String, group_id: String, show_create_channel: Signal<
                 }
             },
         );
-        || {}
-    });
+    }
 
     rsx! {
         div {
@@ -51,7 +50,6 @@ pub fn channel_list(host: String, group_id: String, show_create_channel: Signal<
 
             // Group header
             div {
-                class: "panel-header",
                 style: "height: 52px; min-height: 52px; display: flex; align-items: center; padding: 0 12px; justify-content: space-between; border-bottom: 1px solid var(--rinch-color-dark-4, #373a40); flex-shrink: 0;",
 
                 Text {

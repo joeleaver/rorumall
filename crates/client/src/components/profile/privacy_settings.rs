@@ -7,10 +7,10 @@ pub fn privacy_settings(
     profile_policy: String,
     message_policy: String,
 ) -> NodeHandle {
-    let pres = use_signal(move || presence_policy.clone());
-    let prof = use_signal(move || profile_policy.clone());
-    let msg = use_signal(move || message_policy.clone());
-    let saving = use_signal(|| false);
+    let pres = Signal::new(presence_policy);
+    let prof = Signal::new(profile_policy);
+    let msg = Signal::new(message_policy);
+    let saving = Signal::new(false);
 
     let on_save = move || {
         saving.set(true);

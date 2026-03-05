@@ -16,10 +16,10 @@ thread_local! {
 
 impl GroupsStore {
     pub fn init() -> Self {
-        let joined_groups = use_signal(|| Vec::<UserJoinedGroup>::new());
-        let current_group = use_signal(|| None::<Group>);
-        let channels = use_signal(|| Vec::<Channel>::new());
-        let current_channel_id = use_signal(|| None::<String>);
+        let joined_groups = Signal::new(Vec::<UserJoinedGroup>::new());
+        let current_group = Signal::new(None::<Group>);
+        let channels = Signal::new(Vec::<Channel>::new());
+        let current_channel_id = Signal::new(None::<String>);
 
         let store = Self {
             joined_groups,

@@ -9,10 +9,10 @@ pub fn profile_card(
     avatar_url: String,
     status: String,
 ) -> NodeHandle {
-    let bio_sig = use_signal(|| bio);
-    let user_id_sig = use_signal(|| user_id);
-    let display_name_sig = use_signal(|| display_name);
-    let avatar_url_sig = use_signal(|| avatar_url);
+    let bio_sig = Signal::new(bio);
+    let user_id_sig = Signal::new(user_id);
+    let display_name_sig = Signal::new(display_name);
+    let avatar_url_sig = Signal::new(avatar_url);
 
     rsx! {
         Card {

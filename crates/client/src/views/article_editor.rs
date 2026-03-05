@@ -11,10 +11,10 @@ pub fn article_editor_view() -> NodeHandle {
         _ => return rsx! { div { "Invalid route" } },
     };
 
-    let title = use_signal(|| String::new());
-    let body = use_signal(|| String::new());
-    let error_msg = use_signal(|| None::<String>);
-    let loading = use_signal(|| false);
+    let title = Signal::new(String::new());
+    let body = Signal::new(String::new());
+    let error_msg = Signal::new(None::<String>);
+    let loading = Signal::new(false);
 
     let host_c = host.clone();
     let gid_c = group_id.clone();

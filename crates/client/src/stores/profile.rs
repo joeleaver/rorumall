@@ -15,8 +15,8 @@ thread_local! {
 
 impl ProfileStore {
     pub fn init() -> Self {
-        let current = use_signal(|| None::<UserProfile>);
-        let cache = use_signal(|| HashMap::<String, UserProfile>::new());
+        let current = Signal::new(None::<UserProfile>);
+        let cache = Signal::new(HashMap::<String, UserProfile>::new());
 
         let store = Self { current, cache };
 

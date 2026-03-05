@@ -423,14 +423,28 @@ impl ApiClient {
         filename: &str,
         content_type: &str,
     ) -> Result<rorumall_shared::AvatarResponse, ApiError> {
-        let url = self.url("/api/me/avatar");
+        // Step 1: Upload file to /api/uploads
+        let upload: rorumall_shared::Upload = self.upload_raw(file_data, filename, content_type).await?;
+
+        // Step 2: Set avatar from the upload
+        let req = rorumall_shared::SetAvatarRequest { upload_id: upload.id };
+        self.post_json("/api/me/avatar", &req).await
+    }
+
+    async fn upload_raw(
+        &self,
+        file_data: Vec<u8>,
+        filename: &str,
+        content_type: &str,
+    ) -> Result<rorumall_shared::Upload, ApiError> {
+        let url = self.url("/api/uploads");
         let part = reqwest::multipart::Part::bytes(file_data)
             .file_name(filename.to_string())
             .mime_str(content_type)
             .map_err(|e| ApiError::Network(format!("Invalid MIME type: {}", e)))?;
-        let form = reqwest::multipart::Form::new().part("avatar", part);
+        let form = reqwest::multipart::Form::new().part("file", part);
         let rb = self.client.post(&url).multipart(form);
-        let rb = self.apply_signing(rb, "POST", &url, "/api/me/avatar", &[]);
+        let rb = self.apply_signing(rb, "POST", &url, "/api/uploads", &[]);
 
         let resp = rb.send().await.map_err(|e| ApiError::Network(e.to_string()))?;
         let status = resp.status().as_u16();
@@ -450,25 +464,13 @@ impl ApiClient {
         filename: &str,
         content_type: &str,
     ) -> Result<rorumall_shared::AvatarResponse, ApiError> {
+        // Step 1: Upload file
+        let upload: rorumall_shared::Upload = self.upload_raw(file_data, filename, content_type).await?;
+
+        // Step 2: Set group avatar from the upload
         let path = format!("/api/groups/{}/avatar", group_id);
-        let url = self.url(&path);
-        let part = reqwest::multipart::Part::bytes(file_data)
-            .file_name(filename.to_string())
-            .mime_str(content_type)
-            .map_err(|e| ApiError::Network(format!("Invalid MIME type: {}", e)))?;
-        let form = reqwest::multipart::Form::new().part("avatar", part);
-        let rb = self.client.post(&url).multipart(form);
-        let rb = self.apply_signing(rb, "POST", &url, &path, &[]);
-
-        let resp = rb.send().await.map_err(|e| ApiError::Network(e.to_string()))?;
-        let status = resp.status().as_u16();
-        let is_success = resp.status().is_success();
-        let text = resp.text().await.map_err(|e| ApiError::Network(e.to_string()))?;
-
-        if !is_success {
-            return Err(ApiError::Http { status, body: text });
-        }
-        serde_json::from_str(&text).map_err(|e| ApiError::Deserialize(e.to_string()))
+        let req = rorumall_shared::SetAvatarRequest { upload_id: upload.id };
+        self.post_json(&path, &req).await
     }
 }
 

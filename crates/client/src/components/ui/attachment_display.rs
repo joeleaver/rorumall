@@ -8,10 +8,10 @@ use crate::stores::get_auth_store;
 pub fn attachment_display(att: Attachment) -> NodeHandle {
     let is_image = att.mime.starts_with("image/");
 
-    let filename = use_signal(|| att.id.clone());
-    let size_label = use_signal(|| format_size(att.size));
-    let url = use_signal(|| att.url.clone());
-    let download_status = use_signal(|| DownloadStatus::Idle);
+    let filename = Signal::new(att.id.clone());
+    let size_label = Signal::new(format_size(att.size));
+    let url = Signal::new(att.url.clone());
+    let download_status = Signal::new(DownloadStatus::Idle);
 
     let on_download = move || {
         download_status.set(DownloadStatus::Downloading);

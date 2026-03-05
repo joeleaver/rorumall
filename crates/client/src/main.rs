@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
-use rinch::tray::{TrayIconBuilder, TrayMenu, TrayMenuItem};
+use rinch::menu::{Menu, MenuItem};
+use rinch::tray::TrayIconBuilder;
 use rinch::windows::{close_current_window, hide_current_window, show_current_window};
 use rinch_core::element::WindowProps;
 
@@ -26,10 +27,10 @@ fn main() {
     rorumall::runtime::init();
 
     // Build system tray icon.
-    let menu = TrayMenu::new()
-        .add_item(TrayMenuItem::new("Show Rorumall").on_click(show_current_window))
-        .add_separator()
-        .add_item(TrayMenuItem::new("Quit").on_click(close_current_window));
+    let menu = Menu::new()
+        .item(MenuItem::new("Show Rorumall").on_click(show_current_window))
+        .separator()
+        .item(MenuItem::new("Quit").on_click(close_current_window));
 
     let _tray = TrayIconBuilder::new()
         .with_tooltip("Rorumall")

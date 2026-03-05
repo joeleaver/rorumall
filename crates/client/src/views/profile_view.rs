@@ -8,20 +8,33 @@ pub fn profile_view() -> NodeHandle {
     let auth = get_auth_store();
     let profile_store = get_profile_store();
     let _presence_store = get_presence_store();
-    let loading = use_signal(|| true);
-    let editing = use_signal(|| false);
+    let loading = Signal::new(true);
+    let editing = Signal::new(false);
 
-    let display_name = use_signal(|| String::new());
-    let bio = use_signal(|| String::new());
-    let error_msg = use_signal(|| None::<String>);
-    let success_msg = use_signal(|| None::<String>);
+    let display_name = Signal::new(String::new());
+    let bio = Signal::new(String::new());
+    let error_msg = Signal::new(None::<String>);
+    let success_msg = Signal::new(None::<String>);
+    let avatar_result: Signal<Option<String>> = Signal::new(None);
+
+    // Watch for avatar upload results and update profile avatar URL
+    Effect::new(move || {
+        if let Some(url) = avatar_result.get().clone() {
+            // Update the profile store with the new avatar URL
+            if let Some(mut profile) = profile_store.current.get().clone() {
+                profile.avatar = Some(url);
+                profile_store.current.set(Some(profile));
+            }
+        }
+    });
 
     // Load profile
-    use_mount(move || {
+    {
         let client = auth.make_client();
+        let handle = auth.handle().unwrap_or_default();
         crate::runtime::spawn(
             async move {
-                let profile_result = client.get_json::<rorumall_shared::UserProfile>("/api/me/profile").await;
+                let profile_result = client.get_json::<rorumall_shared::UserProfile>(&format!("/api/users/{}/profile", handle)).await;
                 let presence_result = client.get_own_presence().await;
                 (profile_result, presence_result)
             },
@@ -43,8 +56,7 @@ pub fn profile_view() -> NodeHandle {
                 loading.set(false);
             },
         );
-        || {}
-    });
+    }
 
     let on_save = move || {
         let client = auth.make_client();
@@ -133,8 +145,8 @@ pub fn profile_view() -> NodeHandle {
                         Avatar {
                             size: "xl",
                             color: "indigo",
-                            src: {profile_store.current.get().as_ref().and_then(|p| p.avatar.clone()).unwrap_or_default()},
-                            name: {profile_store.current.get().as_ref().and_then(|p| p.display_name.clone()).unwrap_or_else(|| auth.handle().unwrap_or_default())},
+                            src: {|| profile_store.current.get().as_ref().and_then(|p| p.avatar.clone()).unwrap_or_default()},
+                            name: {|| profile_store.current.get().as_ref().and_then(|p| p.display_name.clone()).unwrap_or_else(|| auth.handle().unwrap_or_default())},
                         }
 
                         Stack {
@@ -166,6 +178,12 @@ pub fn profile_view() -> NodeHandle {
                     if editing.get() {
                         Stack {
                             gap: "md",
+
+                            {crate::components::ui::avatar_uploader::avatar_uploader(
+                                __scope,
+                                profile_store.current.get().as_ref().and_then(|p| p.avatar.clone()).unwrap_or_default(),
+                                avatar_result,
+                            )}
 
                             TextInput {
                                 label: "Display Name",

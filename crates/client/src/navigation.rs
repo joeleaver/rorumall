@@ -23,7 +23,7 @@ pub fn init_nav() {
     } else {
         AppRoute::Login
     };
-    let sig = use_signal(|| initial_route);
+    let sig = Signal::new(initial_route);
     NAV_SIGNAL.with(|n| {
         *n.borrow_mut() = Some(sig);
     });

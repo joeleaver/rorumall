@@ -12,11 +12,11 @@ pub fn render_markdown(text: &str) -> String {
 pub fn article_item(msg: StoredMessage, group_id: String) -> NodeHandle {
     let user_display = msg.user_id.split('@').next().unwrap_or(&msg.user_id).to_string();
     let time = msg.created_at.format("%b %d, %Y at %H:%M").to_string();
-    let expanded = use_signal(|| false);
+    let expanded = Signal::new(false);
 
     let title = msg.title.clone().unwrap_or_else(|| "Untitled Article".to_string());
     let content = msg.content.clone();
-    let attachments = use_signal(|| msg.attachments.clone());
+    let attachments = Signal::new(msg.attachments.clone());
     let preview = if content.len() > 200 {
         format!("{}...", &content[..200])
     } else {

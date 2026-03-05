@@ -17,16 +17,16 @@ struct PendingAttachment {
 
 #[component]
 pub fn message_input(channel_id: String, group_id: String, host: String) -> NodeHandle {
-    let input_text = use_signal(|| String::new());
-    let message_type = use_signal(|| "message".to_string());
-    let reply_to = use_signal(|| None::<String>);
-    let pending = use_signal(|| Vec::<PendingAttachment>::new());
+    let input_text = Signal::new(String::new());
+    let message_type = Signal::new("message".to_string());
+    let reply_to = Signal::new(None::<String>);
+    let pending = Signal::new(Vec::<PendingAttachment>::new());
 
-    let cid = use_signal(|| channel_id.clone());
-    let h = use_signal(|| host.clone());
+    let cid = Signal::new(channel_id.clone());
+    let h = Signal::new(host.clone());
 
     // Keyboard interceptor for clipboard image paste (Ctrl+V)
-    use_mount(move || {
+    {
         tracing::info!("Setting keyboard interceptor for clipboard paste");
         rinch_core::set_keyboard_interceptor(move |key_data| {
             tracing::info!("Keyboard interceptor called: key={}, ctrl={}", key_data.key, key_data.ctrl);
@@ -74,11 +74,7 @@ pub fn message_input(channel_id: String, group_id: String, host: String) -> Node
             }
             false
         });
-
-        move || {
-            rinch_core::clear_keyboard_interceptor();
-        }
-    });
+    }
 
     let on_send = move || {
         let text = input_text.get().clone();
@@ -194,7 +190,6 @@ pub fn message_input(channel_id: String, group_id: String, host: String) -> Node
 
     rsx! {
         div {
-            class: "message-input-area",
             style: "border-top: 1px solid var(--rinch-color-dark-4, #373a40); padding: 12px 16px; background: var(--rinch-color-dark-7, #1a1b1e);",
 
             // Reply indicator
@@ -300,11 +295,11 @@ fn pending_attachment_preview(
     let is_image = pa.mime.starts_with("image/");
     let uploading = pa.server.is_none();
     let size = pa.size;
-    let local_id = use_signal(|| pa.local_id.clone());
-    let filename = use_signal(|| pa.filename.clone());
+    let local_id = Signal::new(pa.local_id.clone());
+    let filename = Signal::new(pa.filename.clone());
 
     // Use local file for immediate preview, or server URL once uploaded
-    let preview_src = use_signal(|| if !pa.local_preview.is_empty() {
+    let preview_src = Signal::new(if !pa.local_preview.is_empty() {
         pa.local_preview.clone()
     } else {
         pa.server.as_ref().map(|s| s.url.clone()).unwrap_or_default()

@@ -22,9 +22,9 @@ fn chat_message(msg: StoredMessage, group_id: String) -> NodeHandle {
     let user_display = msg.user_id.split('@').next().unwrap_or(&msg.user_id).to_string();
     let time = msg.created_at.format("%H:%M").to_string();
     let has_attachments = !msg.attachments.is_empty();
-    let parent_id = use_signal(|| msg.parent_id.clone());
-    let attachments = use_signal(|| msg.attachments.clone());
-    let content = use_signal(|| msg.content.clone());
+    let parent_id = Signal::new(msg.parent_id.clone());
+    let attachments = Signal::new(msg.attachments.clone());
+    let content = Signal::new(msg.content.clone());
 
     let avatar_url = {
         let members = get_members_store()
@@ -38,8 +38,7 @@ fn chat_message(msg: StoredMessage, group_id: String) -> NodeHandle {
 
     rsx! {
         div {
-            class: "chat-message",
-            style: "display: flex; gap: 12px; padding: 6px 8px; border-radius: 6px; align-items: flex-start;",
+            style: "display: flex; gap: 12px; padding: 6px 8px; border-radius: 6px; align-items: flex-start; margin: 1px 0;",
 
             Avatar {
                 size: "sm",

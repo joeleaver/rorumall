@@ -16,9 +16,9 @@ thread_local! {
 
 impl MembersStore {
     pub fn init() -> Self {
-        let members = use_signal(|| HashMap::<String, Vec<GroupMember>>::new());
-        let my_roles = use_signal(|| HashMap::<String, Vec<String>>::new());
-        let group_roles = use_signal(|| HashMap::<String, Vec<GroupRole>>::new());
+        let members = Signal::new(HashMap::<String, Vec<GroupMember>>::new());
+        let my_roles = Signal::new(HashMap::<String, Vec<String>>::new());
+        let group_roles = Signal::new(HashMap::<String, Vec<GroupRole>>::new());
 
         let store = Self {
             members,

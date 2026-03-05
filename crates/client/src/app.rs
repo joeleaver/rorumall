@@ -19,8 +19,7 @@ pub fn app() -> NodeHandle {
 
     rsx! {
         div {
-            class: "app-root",
-            style: "width: 100vw; height: 100vh; display: flex; flex-direction: column;",
+            style: "width: 100vw; height: 100vh; display: flex; flex-direction: column; background: var(--rinch-color-body); color: var(--rinch-color-text);",
 
             if matches!(nav.get().clone(), AppRoute::Login) {
                 div {

@@ -151,11 +151,30 @@ pub struct PrivacySettings {
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 #[serde(rename_all = "camelCase")]
+pub struct Upload {
+    pub id: String,
+    pub user_id: String,
+    pub filename: String,
+    pub mime: String,
+    pub url: String,
+    pub size: u64,
+    pub category: String,
+    pub created_at: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(rename_all = "camelCase")]
 pub struct Attachment {
     pub id: String,
     pub mime: String,
     pub url: String,
     pub size: u64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SetAvatarRequest {
+    pub upload_id: String,
 }
 
 // --- Messaging ---

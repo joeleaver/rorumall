@@ -3,7 +3,7 @@ use crate::stores::get_auth_store;
 
 #[component]
 pub fn file_picker(attachments: Signal<Vec<rorumall_shared::Attachment>>) -> NodeHandle {
-    let uploading = use_signal(|| false);
+    let uploading = Signal::new(false);
 
     let on_pick = move || {
         uploading.set(true);

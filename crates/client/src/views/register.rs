@@ -6,12 +6,12 @@ use crate::stores::get_auth_store;
 
 #[component]
 pub fn register_view() -> NodeHandle {
-    let server_url = use_signal(|| get_auth_store().domain());
-    let handle_input = use_signal(|| String::new());
-    let password_input = use_signal(|| String::new());
-    let confirm_password = use_signal(|| String::new());
-    let error_msg = use_signal(|| None::<String>);
-    let loading = use_signal(|| false);
+    let server_url = Signal::new(get_auth_store().domain());
+    let handle_input = Signal::new(String::new());
+    let password_input = Signal::new(String::new());
+    let confirm_password = Signal::new(String::new());
+    let error_msg = Signal::new(None::<String>);
+    let loading = Signal::new(false);
 
     let on_register = move || {
         let server = server_url.get().clone();
@@ -94,7 +94,6 @@ pub fn register_view() -> NodeHandle {
 
     rsx! {
         div {
-            class: "auth-container",
             style: "display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #141517 0%, #1a1b1e 100%);",
 
             Paper {

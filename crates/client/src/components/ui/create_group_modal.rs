@@ -3,10 +3,10 @@ use crate::stores::{get_auth_store, get_groups_store};
 
 #[component]
 pub fn create_group_modal(opened: Signal<bool>) -> NodeHandle {
-    let name = use_signal(|| String::new());
-    let description = use_signal(|| String::new());
-    let creating = use_signal(|| false);
-    let error = use_signal(|| Option::<String>::None);
+    let name = Signal::new(String::new());
+    let description = Signal::new(String::new());
+    let creating = Signal::new(false);
+    let error = Signal::new(Option::<String>::None);
 
     let on_create = move || {
         let n = name.get().clone();

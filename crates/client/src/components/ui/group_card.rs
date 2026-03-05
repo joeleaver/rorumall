@@ -2,9 +2,9 @@ use rinch::prelude::*;
 
 #[component]
 pub fn group_card(group: rorumall_shared::Group) -> NodeHandle {
-    let avatar = use_signal(|| group.avatar.clone().unwrap_or_default());
-    let name = use_signal(|| group.name.clone());
-    let description = use_signal(|| group.description.clone());
+    let avatar = Signal::new(group.avatar.clone().unwrap_or_default());
+    let name = Signal::new(group.name.clone());
+    let description = Signal::new(group.description.clone());
 
     rsx! {
         Card {

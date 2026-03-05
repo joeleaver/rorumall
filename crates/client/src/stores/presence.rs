@@ -15,8 +15,8 @@ thread_local! {
 
 impl PresenceStore {
     pub fn init() -> Self {
-        let current = use_signal(|| None::<Presence>);
-        let others = use_signal(|| HashMap::<String, Presence>::new());
+        let current = Signal::new(None::<Presence>);
+        let others = Signal::new(HashMap::<String, Presence>::new());
 
         let store = Self { current, others };
 

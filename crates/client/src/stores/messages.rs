@@ -54,7 +54,7 @@ thread_local! {
 
 impl MessagesStore {
     pub fn init() -> Self {
-        let messages = use_signal(|| HashMap::<String, ChannelMessages>::new());
+        let messages = Signal::new(HashMap::<String, ChannelMessages>::new());
         let store = Self { messages };
         MESSAGES_STORE.with(|s| {
             *s.borrow_mut() = Some(store);

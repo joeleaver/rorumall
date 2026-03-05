@@ -6,21 +6,36 @@ pub fn profile_edit_form() -> NodeHandle {
     let profile_store = get_profile_store();
     let current = profile_store.current.get().clone();
     let current2 = current.clone();
+    let current3 = current.clone();
 
-    let display_name = use_signal(move || {
+    let avatar_url = Signal::new(
         current
+            .as_ref()
+            .and_then(|p| p.avatar.clone())
+            .unwrap_or_default()
+    );
+    let avatar_result: Signal<Option<String>> = Signal::new(None);
+    let display_name = Signal::new(
+        current2
             .as_ref()
             .and_then(|p| p.display_name.clone())
             .unwrap_or_default()
-    });
-    let bio = use_signal(move || {
-        current2
+    );
+    let bio = Signal::new(
+        current3
             .as_ref()
             .and_then(|p| p.bio.clone())
             .unwrap_or_default()
+    );
+    let saving = Signal::new(false);
+    let error = Signal::new(Option::<String>::None);
+
+    // Watch for avatar upload results
+    Effect::new(move || {
+        if let Some(url) = avatar_result.get().clone() {
+            avatar_url.set(url);
+        }
     });
-    let saving = use_signal(|| false);
-    let error = use_signal(|| Option::<String>::None);
 
     let on_save = move || {
         saving.set(true);
@@ -28,12 +43,13 @@ pub fn profile_edit_form() -> NodeHandle {
         let client = get_auth_store().make_client();
         let name = display_name.get().clone();
         let b = bio.get().clone();
+        let av = avatar_url.get().clone();
         crate::runtime::spawn(
             async move {
                 let req = rorumall_shared::UpdateProfileRequest {
                     display_name: if name.is_empty() { None } else { Some(name) },
                     bio: if b.is_empty() { None } else { Some(b) },
-                    avatar: None,
+                    avatar: if av.is_empty() { None } else { Some(av) },
                     metadata: None,
                 };
                 client.update_profile(&req).await.map_err(|e| e.to_string())
@@ -67,6 +83,12 @@ pub fn profile_edit_form() -> NodeHandle {
                     {error.get().clone().unwrap_or_default()}
                 }
             }
+
+            {crate::components::ui::avatar_uploader::avatar_uploader(
+                __scope,
+                avatar_url.get().clone(),
+                avatar_result,
+            )}
 
             TextInput {
                 label: "Display Name",

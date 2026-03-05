@@ -7,7 +7,7 @@ pub fn avatar_uploader(
     current_url: String,
     avatar_result: Signal<Option<String>>,
 ) -> NodeHandle {
-    let uploading = use_signal(|| false);
+    let uploading = Signal::new(false);
 
     let on_pick = move || {
         uploading.set(true);

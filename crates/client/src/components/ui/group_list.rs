@@ -5,8 +5,8 @@ use crate::stores::get_groups_store;
 #[component]
 pub fn group_list() -> NodeHandle {
     let groups_store = get_groups_store();
-    let groups = use_signal(|| groups_store.joined_groups.get().clone());
-    let current = use_signal(|| groups_store.current_group.get().clone());
+    let groups = Signal::new(groups_store.joined_groups.get().clone());
+    let current = Signal::new(groups_store.current_group.get().clone());
 
     rsx! {
         Stack {
